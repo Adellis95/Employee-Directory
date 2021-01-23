@@ -5,6 +5,7 @@ const SearchBar = (props) => {
         <nav className="navbar navbar-light bg-light justify-content-center">
             <form className="form-inline m-2">
                 <input 
+                    onChange={props.handleInputChange}
                     className="form-control"
                     value={props.value}
                     name="search"
