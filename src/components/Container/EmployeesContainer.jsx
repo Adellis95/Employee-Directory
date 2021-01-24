@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SearchBar from "../SearchBar";
+import EmployeeTable from "../EmployeeTable"
 import API from "../../pages/API";
 
 class EmployeesContainer extends Component {
@@ -82,6 +83,7 @@ class EmployeesContainer extends Component {
                         employee.name.first.toLowerCase().includes(input) || 
                         employee.name.last.toLowerCase().includes(input) || 
                         employee.phone.includes(input) || 
+                        employee.phone.replace(/[^\w\s]/gi, '').includes(input) || 
                         employee.email.includes(input) ||
                         this.formatDate(employee.dob.date).includes(input)
                     );
@@ -92,7 +94,7 @@ class EmployeesContainer extends Component {
         }
     };
 
-    formatDate(date) {
+    formatDate = (date) => {
         date = new Date(date);
         let dob = [];
         dob.push(("0" +(date.getMonth() + 1)).slice(-2));
@@ -110,48 +112,13 @@ class EmployeesContainer extends Component {
                 handleInputChange={this.handleInputChange}
                 handleFormSubmit={this.handleFormSubmit}
             />
-            <div className="container">
-                <table className="table table-striped table-sortable text-center mt-5">
-                    <thead>
-                        <tr>
-                            <th scope="col">Image</th>
-                            <th scope="col" data-field="name" data-sortable="true">
-                                <span onClick={() => this.sortBy("name", "last", "first")}>Name</span>
-                            </th>
-                            <th scope="col">
-                                <span onClick={() => this.sortBy("phone")}>Phone</span>
-                            </th>
-                            <th scope="col">
-                                <span onClick={() => this.sortBy("email")}>Email</span>
-                            </th>
-                            <th scope="col">
-                                <span onClick={() => this.sortBy("dob", "date")}>Date of Birth</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.filteredEmployees.map((employee) => {
-                            const { first, last } = employee.name;
-                            const fullName = `${first} ${last}`;
-
-                            const dob = this.formatDate(employee.dob.date);
-
-                            return (
-                                <tr key={employee.login.uuid}>
-                                    <th scope="row">
-                                        <img src={employee.picture.thumbnail} alt={fullName} />
-                                    </th>
-                                    <td className="align-middle">{fullName}</td>
-                                    <td className="align-middle">{employee.phone}</td>
-                                    <td className="align-middle">
-                                        <a href={`mailto:${employee.email}`}>{employee.email}</a>
-                                    </td>
-                                    <td className="align-middle">{dob}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+            <div className="container mt-4">
+                <EmployeeTable 
+                    state={this.state}
+                    sortBy={this.sortBy}
+                    filterEmployees={this.filterEmployees}
+                    formatDate={this.formatDate}
+                />
             </div>
         </>
         );
