@@ -67,7 +67,7 @@ class EmployeesContainer extends Component {
                         employee.name.last.toLowerCase().includes(input) || 
                         employee.cell.includes(input) || 
                         employee.email.includes(input) ||
-                        employee.dob.date.includes(input)
+                        this.formatDate(employee.dob.date).includes(input)
                     );
                 }),
             });
@@ -77,6 +77,7 @@ class EmployeesContainer extends Component {
     };
 
     formatDate(date) {
+        date = new Date(date);
         let dob = [];
         dob.push(("0" +(date.getMonth() + 1)).slice(-2));
         dob.push(("0" + date.getDate()).slice(-2));
@@ -117,7 +118,7 @@ class EmployeesContainer extends Component {
                             const { first, last } = employee.name;
                             const fullName = `${first} ${last}`;
 
-                            const dob = this.formatDate(new Date(employee.dob.date));
+                            const dob = this.formatDate(employee.dob.date);
 
                             return (
                                 <tr key={employee.login.uuid}>
