@@ -53,6 +53,25 @@ class EmployeesContainer extends Component {
     //     });
     // };
 
+    sortBy = (key, primary, secondary) => {
+        const sortedEmployees = this.state.filteredEmployees.sort((a, b) => {
+            a = a[key]
+            b = b[key]
+
+            if (secondary && a[primary] === b[primary]) {
+                return a[secondary].localeCompare(secondary);
+            }
+
+            return a[primary].localCompare(b[primary]);
+        });
+
+        console.log(sortedEmployees);
+
+        this.setState({
+            filteredEmployees: sortedEmployees,
+        });
+    };
+
     filterEmployees = (input) => {
         if (input) {
             this.setState({
@@ -77,12 +96,12 @@ class EmployeesContainer extends Component {
                 handleFormSubmit={this.handleFormSubmit}
             />
             <div className="container">
-                <table className="table table-striped text-center mt-5">
+                <table className="table table-striped table-sortable text-center mt-5">
                     <thead>
                         <tr>
                             <th scope="col">Image</th>
-                            <th scope="col">
-                                <span onClick={() => console.log("Sorting by the name")}>Name</span>
+                            <th scope="col" data-field="name" data-sortable="true">
+                                <span onClick={() => this.sortBy("name", "last", "first")}>Name</span>
                             </th>
                             <th scope="col">
                                 <span onClick={() => console.log("Sorting by the phone number")}>Phone</span>
