@@ -141,12 +141,12 @@ class EmployeesContainer extends Component {
                                     <th scope="row">
                                         <img src={employee.picture.thumbnail} alt={fullName} />
                                     </th>
-                                    <td>{fullName}</td>
-                                    <td>{employee.phone}</td>
-                                    <td>
+                                    <td className="align-middle">{fullName}</td>
+                                    <td className="align-middle">{employee.phone}</td>
+                                    <td className="align-middle">
                                         <a href={`mailto:${employee.email}`}>{employee.email}</a>
                                     </td>
-                                    <td>{dob}</td>
+                                    <td className="align-middle">{dob}</td>
                                 </tr>
                             );
                         })}
