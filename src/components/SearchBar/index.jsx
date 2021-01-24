@@ -3,15 +3,14 @@ import React from 'react';
 const SearchBar = (props) => {
     return (
         <nav className="navbar navbar-light bg-light justify-content-center">
-            <form className="form-inline m-2">
+            <form className="form-inline m-2" onSubmit={(e) => e.preventDefault()}>
                 <input 
-                    onChange={props.handleInputChange}
                     className="form-control"
                     value={props.value}
                     name="search"
+                    onChange={props.handleInputChange}
                     type="search"
                     placeholder="Search"
-                    id="search"
                 />
             </form>
         </nav>

@@ -44,7 +44,7 @@ class EmployeesContainer extends Component {
                             dob = dob.join("-");
 
                             return (
-                                <tr>
+                                <tr key={employee.login.uuid}>
                                     <th scope="row">
                                         <img src={employee.picture.thumbnail} alt={fullName} />
                                     </th>
