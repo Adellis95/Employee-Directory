@@ -8,13 +8,17 @@ class EmployeesContainer extends Component {
         search: "",
         employees: [],
         filteredEmployees: [],
-        direction: {
+        sortDirections: this.initialSortDirections,
+    };
+
+    get initialSortDirections() {
+        return {
             name: "",
             phone: "",
             email: "",
             dob: "",
-        },
-    };
+        };
+    }
 
     componentDidMount() {
         API.getEmployees()
@@ -35,25 +39,37 @@ class EmployeesContainer extends Component {
         event.preventDefault();
     };
 
-    sortBy = (key, primary, secondary) => {
-        let sortedEmployees = this.state.filteredEmployees.sort((a, b) => {
-            a = a[key];
-            b = b[key];
+    sortBy = (key, primary = 0, secondary = 0) => {
+        let sortedEmployees = this.state.filteredEmployees;
+        if (this.state.sortDirections[key]) {
+            this.setState({
+                filteredEmployees: sortedEmployees.reverse(),
+                sortDirections: {
+                    ...this.initialSortDirections,
+                    [key]: this.state.sortDirections[key] === "asc" ? "desc" : "asc",
+                },
+            });
+        } else {
+            sortedEmployees = this.state.filteredEmployees.sort((a, b) => {
+                a = a[key];
+                b = b[key];
 
-            if (secondary && a[primary] === b[primary]) {
-                return a[secondary].localeCompare(secondary);
-            }
-
-            return a[primary].localCompare(b[primary]);
-        });
+                if (primary) {
+                    if (secondary && a[primary] === b[primary]) {
+                        return a[secondary].localeCompare(b[secondary]);
+                    }
+                    return a[primary].localeCompare(b[primary]);
+                } else {
+                    return a.localeCompare(b);
+                }
+            });
+        }
 
         this.setState({
-            filteredEmployees: this.state.direction[key] === "asc" 
-            ? sortedEmployees.reverse() 
-            : sortedEmployees,
-            direction: {
-                ...this.state.direction, 
-                [key]: this.state.direction[key] === "asc" ? "desc" : "asc",
+            filteredEmployees: sortedEmployees,
+            sortDirections: {
+                ...this.initialSortDirections,
+                [key]: "asc",
             },
         });
     };
@@ -65,7 +81,7 @@ class EmployeesContainer extends Component {
                     return (
                         employee.name.first.toLowerCase().includes(input) || 
                         employee.name.last.toLowerCase().includes(input) || 
-                        employee.cell.includes(input) || 
+                        employee.phone.includes(input) || 
                         employee.email.includes(input) ||
                         this.formatDate(employee.dob.date).includes(input)
                     );
@@ -103,13 +119,13 @@ class EmployeesContainer extends Component {
                                 <span onClick={() => this.sortBy("name", "last", "first")}>Name</span>
                             </th>
                             <th scope="col">
-                                <span onClick={() => console.log("Sorting by the phone number")}>Phone</span>
+                                <span onClick={() => this.sortBy("phone")}>Phone</span>
                             </th>
                             <th scope="col">
-                                <span onClick={() => console.log("Sorting by the email")}>Email</span>
+                                <span onClick={() => this.sortBy("email")}>Email</span>
                             </th>
                             <th scope="col">
-                                <span onClick={() => console.log("Sorting by the date of birth")}>Date of Birth</span>
+                                <span onClick={() => this.sortBy("dob", "date")}>Date of Birth</span>
                             </th>
                         </tr>
                     </thead>
@@ -126,7 +142,7 @@ class EmployeesContainer extends Component {
                                         <img src={employee.picture.thumbnail} alt={fullName} />
                                     </th>
                                     <td>{fullName}</td>
-                                    <td>{employee.cell}</td>
+                                    <td>{employee.phone}</td>
                                     <td>
                                         <a href={`mailto:${employee.email}`}>{employee.email}</a>
                                     </td>
