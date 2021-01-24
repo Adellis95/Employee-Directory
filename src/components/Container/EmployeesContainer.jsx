@@ -30,13 +30,37 @@ class EmployeesContainer extends Component {
         event.preventDefault();
     };
 
-    sortEmployees = (field, property) => {};
+    // sortEmployees = (field, property, backup) => {
+    //     let sortEmployees = [...this.state.employees].sort((a, b) => {
+    //         let x = a[field][property].toLowerCase();
+    //         let y = b[field][property].toLowerCase();
+
+    //         if (backup && x === y) {
+    //             x = a[field][backup].toLowerCase();
+    //             y = b[field][backup].toLowerCase();
+    //             return x.localeCompare(y);
+    //         }
+
+    //         return x.localeCompare(y);
+    //     });
+
+    //     if (this.state.sortedEmployees !== sortEmployees) {
+    //         sortEmployees = this.state.sortedEmployees.sort(() => -1);
+    //     }
+
+    //     this.setState({
+    //         sortedEmployees: sortEmployees,
+    //     });
+    // };
 
     filterEmployees = (input) => {
         if (input) {
             this.setState({
                 filteredEmployees: this.state.employees.filter((employee) => {
-                    return employee.name.first.toLowerCase().includes(input) || employee.name.last.toLowerCase().includes(input);
+                    return (
+                        employee.name.first.toLowerCase().includes(input) || 
+                        employee.name.last.toLowerCase().includes(input)
+                    );
                 }),
             });
         } else {
