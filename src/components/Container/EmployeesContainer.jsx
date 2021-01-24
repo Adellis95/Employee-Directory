@@ -30,33 +30,58 @@ class EmployeesContainer extends Component {
         event.preventDefault();
     };
 
-    
+    sortEmployees = (field, property) => {};
+
+    filterEmployees = (input) => {
+        if (input) {
+            this.setState({
+                filteredEmployees: this.state.employees.filter((employee) => {
+                    return employee.name.first.toLowerCase().includes(input) || employee.name.last.toLowerCase().includes(input);
+                }),
+            });
+        } else {
+            this.setState({ filteredEmployees: this.state.employees });
+        }
+    };
 
     render() {
         return (
         <>
-            <SearchBar />
+            <SearchBar 
+                value={this.state.search}
+                handleInputChange={this.handleInputChange}
+                handleFormSubmit={this.handleFormSubmit}
+            />
             <div className="container">
                 <table className="table table-striped text-center mt-5">
                     <thead>
                         <tr>
                             <th scope="col">Image</th>
-                            <th scope="col">Nane</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Date of Birth</th>
+                            <th scope="col">
+                                <span onClick={() => console.log("Sorting by the name")}>Name</span>
+                            </th>
+                            <th scope="col">
+                                <span onClick={() => console.log("Sorting by the phone number")}>Phone</span>
+                            </th>
+                            <th scope="col">
+                                <span onClick={() => console.log("Sorting by the email")}>Email</span>
+                            </th>
+                            <th scope="col">
+                                <span onClick={() => console.log("Sorting by the date of birth")}>Date of Birth</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.employees.map((employee) => {
+                        {this.state.filteredEmployees.map((employee) => {
                             const { first, last } = employee.name;
                             const fullName = `${first} ${last}`;
+
                             const date = new Date(employee.dob.date);
                             let dob = [];
-
                             dob.push(("0" + (date.getMonth() + 1)).slice(-2));
                             dob.push(("0" + date.getDate()).slice(-2));
                             dob.push(date.getFullYear());
+
                             dob = dob.join("-");
 
                             return (
@@ -66,7 +91,9 @@ class EmployeesContainer extends Component {
                                     </th>
                                     <td>{fullName}</td>
                                     <td>{employee.cell}</td>
-                                    <td>{employee.email}</td>
+                                    <td>
+                                        <a href={`mailto:${employee.email}`}>{employee.email}</a>
+                                    </td>
                                     <td>{dob}</td>
                                 </tr>
                             );
