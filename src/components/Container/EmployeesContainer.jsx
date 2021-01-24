@@ -8,7 +8,12 @@ class EmployeesContainer extends Component {
         search: "",
         employees: [],
         filteredEmployees: [],
-        sortAscending: true,
+        direction: {
+            name: "",
+            phone: "",
+            email: "",
+            dob: "",
+        },
     };
 
     componentDidMount() {
@@ -30,33 +35,10 @@ class EmployeesContainer extends Component {
         event.preventDefault();
     };
 
-    // sortEmployees = (field, property, backup) => {
-    //     let sortEmployees = [...this.state.employees].sort((a, b) => {
-    //         let x = a[field][property].toLowerCase();
-    //         let y = b[field][property].toLowerCase();
-
-    //         if (backup && x === y) {
-    //             x = a[field][backup].toLowerCase();
-    //             y = b[field][backup].toLowerCase();
-    //             return x.localeCompare(y);
-    //         }
-
-    //         return x.localeCompare(y);
-    //     });
-
-    //     if (this.state.sortedEmployees !== sortEmployees) {
-    //         sortEmployees = this.state.sortedEmployees.sort(() => -1);
-    //     }
-
-    //     this.setState({
-    //         sortedEmployees: sortEmployees,
-    //     });
-    // };
-
     sortBy = (key, primary, secondary) => {
-        const sortedEmployees = this.state.filteredEmployees.sort((a, b) => {
-            a = a[key]
-            b = b[key]
+        let sortedEmployees = this.state.filteredEmployees.sort((a, b) => {
+            a = a[key];
+            b = b[key];
 
             if (secondary && a[primary] === b[primary]) {
                 return a[secondary].localeCompare(secondary);
@@ -65,10 +47,14 @@ class EmployeesContainer extends Component {
             return a[primary].localCompare(b[primary]);
         });
 
-        console.log(sortedEmployees);
-
         this.setState({
-            filteredEmployees: sortedEmployees,
+            filteredEmployees: this.state.direction[key] === "asc" 
+            ? sortedEmployees.reverse() 
+            : sortedEmployees,
+            direction: {
+                ...this.state.direction, 
+                [key]: this.state.direction[key] === "asc" ? "desc" : "asc",
+            },
         });
     };
 
@@ -78,7 +64,10 @@ class EmployeesContainer extends Component {
                 filteredEmployees: this.state.employees.filter((employee) => {
                     return (
                         employee.name.first.toLowerCase().includes(input) || 
-                        employee.name.last.toLowerCase().includes(input)
+                        employee.name.last.toLowerCase().includes(input) || 
+                        employee.cell.includes(input) || 
+                        employee.email.includes(input) ||
+                        employee.dob.date.includes(input)
                     );
                 }),
             });
@@ -86,6 +75,15 @@ class EmployeesContainer extends Component {
             this.setState({ filteredEmployees: this.state.employees });
         }
     };
+
+    formatDate(date) {
+        let dob = [];
+        dob.push(("0" +(date.getMonth() + 1)).slice(-2));
+        dob.push(("0" + date.getDate()).slice(-2));
+        dob.push(date.getFullYear());
+
+        return dob.join("-");
+    }
 
     render() {
         return (
@@ -119,13 +117,7 @@ class EmployeesContainer extends Component {
                             const { first, last } = employee.name;
                             const fullName = `${first} ${last}`;
 
-                            const date = new Date(employee.dob.date);
-                            let dob = [];
-                            dob.push(("0" + (date.getMonth() + 1)).slice(-2));
-                            dob.push(("0" + date.getDate()).slice(-2));
-                            dob.push(date.getFullYear());
-
-                            dob = dob.join("-");
+                            const dob = this.formatDate(new Date(employee.dob.date));
 
                             return (
                                 <tr key={employee.login.uuid}>
