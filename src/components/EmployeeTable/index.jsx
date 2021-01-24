@@ -21,11 +21,11 @@ const EmployeeTable = (props) => {
                 </tr>
             </thead>
             <tbody>
-                {this.state.filteredEmployees.map((employee) => {
+                {props.state.filteredEmployees.map((employee) => {
                     const { first, last } = employee.name;
                     const fullName = `${first} ${last}`;
 
-                    const dob = this.formatDate(employee.dob.date);
+                    const dob = props.formatDate(employee.dob.date);
 
                     return (
                         <tr key={employee.login.uuid}>
