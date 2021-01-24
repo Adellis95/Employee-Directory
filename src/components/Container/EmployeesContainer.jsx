@@ -8,13 +8,29 @@ class EmployeesContainer extends Component {
         search: "",
         employees: [],
         filteredEmployees: [],
+        sortAscending: true,
     };
 
     componentDidMount() {
         API.getEmployees()
-        .then((res) => this.setState({ employees: res.data.results }))
+        .then((res) => this.setState({
+            employees: res.data.results, 
+            filteredEmployees: res.data.results,
+        }))
         .catch((err) => console.log(err));
     }
+
+    handleInputChange = (event) => {
+        const value = event.target.value;
+        this.setState({ search: value });
+        this.filterEmployees(value.toLowerCase().trim());
+    };
+
+    handleFormSubmit = (event) => {
+        event.preventDefault();
+    };
+
+    
 
     render() {
         return (
